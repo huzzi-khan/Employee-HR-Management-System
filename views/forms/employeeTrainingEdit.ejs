@@ -7,63 +7,101 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Employee Training Record</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/employeeTraining/<%= employeeTraining.EmployeeID %>/<%= employeeTraining.TrainingID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="employeeID">Employee *</label>
-                <select id="employeeID" name="employeeID" required disabled>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= employeeTraining.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
-                <small>Employee cannot be changed (part of primary key)</small>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
-            
-            <div class="form-group">
-                <label for="trainingID">Training Session *</label>
-                <select id="trainingID" name="trainingID" required disabled>
-                    <% trainings.forEach(training => { %>
-                        <option value="<%= training.TrainingID %>" <%= employeeTraining.TrainingID == training.TrainingID ? 'selected' : '' %>>
-                            <%= training.SessionTitle %> (ID: <%= training.TrainingID %>)
-                        </option>
-                    <% }) %>
-                </select>
-                <small>Training Session cannot be changed (part of primary key)</small>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/employeeTraining/edit/<%= formData.EmployeeID %>/<%= formData.TrainingID %>" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                        <small style="color: #666; font-size: 0.85rem;">
+                            Note: Changing employee will create a new record and delete the old one
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trainingId">Training Session *</label>
+                        <select id="trainingId" name="trainingId" required>
+                            <option value="">-- Select Training Session --</option>
+                            <% trainings.forEach(training => { %>
+                                <option value="<%= training.TrainingID %>" 
+                                        <%= formData.TrainingID == training.TrainingID ? 'selected' : '' %>>
+                                    <%= training.SessionTitle %> (ID: <%= training.TrainingID %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                        <small style="color: #666; font-size: 0.85rem;">
+                            Note: Changing training session will create a new record and delete the old one
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="completionDate">Completion Date</label>
+                        <input 
+                            type="date" 
+                            id="completionDate" 
+                            name="completionDate" 
+                            value="<%= formData.CompletionDate ? formData.CompletionDate.toISOString().split('T')[0] : '' %>"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grade">Grade</label>
+                        <select id="grade" name="grade">
+                            <option value="">-- No Grade --</option>
+                            <option value="A+" <%= formData.Grade === 'A+' ? 'selected' : '' %>>A+</option>
+                            <option value="A" <%= formData.Grade === 'A' ? 'selected' : '' %>>A</option>
+                            <option value="B+" <%= formData.Grade === 'B+' ? 'selected' : '' %>>B+</option>
+                            <option value="B" <%= formData.Grade === 'B' ? 'selected' : '' %>>B</option>
+                            <option value="C+" <%= formData.Grade === 'C+' ? 'selected' : '' %>>C+</option>
+                            <option value="C" <%= formData.Grade === 'C' ? 'selected' : '' %>>C</option>
+                            <option value="F" <%= formData.Grade === 'F' ? 'selected' : '' %>>F</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Training Record</button>
+                        <a href="/employeeTraining/details/<%= formData.EmployeeID %>/<%= formData.TrainingID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/employeeTraining/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="completionDate">Completion Date</label>
-                <input type="date" id="completionDate" name="completionDate" value="<%= employeeTraining.CompletionDate ? employeeTraining.CompletionDate.toISOString().split('T')[0] : '' %>">
-            </div>
-            
-            <div class="form-group">
-                <label for="grade">Grade</label>
-                <select id="grade" name="grade">
-                    <option value="">-- No Grade --</option>
-                    <option value="A+" <%= employeeTraining.Grade === 'A+' ? 'selected' : '' %>>A+</option>
-                    <option value="A" <%= employeeTraining.Grade === 'A' ? 'selected' : '' %>>A</option>
-                    <option value="B+" <%= employeeTraining.Grade === 'B+' ? 'selected' : '' %>>B+</option>
-                    <option value="B" <%= employeeTraining.Grade === 'B' ? 'selected' : '' %>>B</option>
-                    <option value="C+" <%= employeeTraining.Grade === 'C+' ? 'selected' : '' %>>C+</option>
-                    <option value="C" <%= employeeTraining.Grade === 'C' ? 'selected' : '' %>>C</option>
-                    <option value="F" <%= employeeTraining.Grade === 'F' ? 'selected' : '' %>>F</option>
-                </select>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Training Record</button>
-                <a href="/employeeTraining/<%= employeeTraining.EmployeeID %>/<%= employeeTraining.TrainingID %>" class="btn-secondary">Cancel</a>
-                <a href="/employeeTraining" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

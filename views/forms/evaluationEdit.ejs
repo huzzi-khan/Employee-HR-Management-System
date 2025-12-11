@@ -7,57 +7,118 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Performance Evaluation</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/evaluation/<%= evaluation.EvaluationID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="employeeID">Employee Being Evaluated *</label>
-                <select id="employeeID" name="employeeID" required>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= evaluation.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/evaluation/edit/<%= formData.EvaluationID %>" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee Being Evaluated *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reviewerId">Reviewer *</label>
+                        <select id="reviewerId" name="reviewerId" required>
+                            <option value="">-- Select Reviewer --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.ReviewerID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="evaluationDate">Evaluation Date *</label>
+                        <input 
+                            type="date" 
+                            id="evaluationDate" 
+                            name="evaluationDate" 
+                            value="<%= formData.EvaluationDate ? formData.EvaluationDate.toISOString().split('T')[0] : '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rating">Rating (1.0 - 5.0) *</label>
+                        <input 
+                            type="number" 
+                            id="rating" 
+                            name="rating" 
+                            step="0.01" 
+                            min="1.0" 
+                            max="5.0" 
+                            value="<%= formData.Rating || '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea 
+                            id="comments" 
+                            name="comments" 
+                            rows="5"
+                        ><%= formData.Comments || '' %></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Evaluation</button>
+                        <a href="/evaluation/details/<%= formData.EvaluationID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/evaluation/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
+
+    <script>
+        // Client-side validation to prevent reviewer from being same as employee
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const employeeId = document.getElementById('employeeId').value;
+            const reviewerId = document.getElementById('reviewerId').value;
             
-            <div class="form-group">
-                <label for="reviewerID">Reviewer *</label>
-                <select id="reviewerID" name="reviewerID" required>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= evaluation.ReviewerID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="evaluationDate">Evaluation Date *</label>
-                <input type="date" id="evaluationDate" name="evaluationDate" value="<%= evaluation.EvaluationDate.toISOString().split('T')[0] %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="rating">Rating (1.0 - 5.0) *</label>
-                <input type="number" id="rating" name="rating" step="0.01" min="1.0" max="5.0" value="<%= evaluation.Rating %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="comments">Comments</label>
-                <textarea id="comments" name="comments" rows="5"><%= evaluation.Comments || '' %></textarea>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Evaluation</button>
-                <a href="/evaluation/<%= evaluation.EvaluationID %>" class="btn-secondary">Cancel</a>
-                <a href="/evaluation" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+            if (employeeId && reviewerId && employeeId === reviewerId) {
+                e.preventDefault();
+                alert('Error: Reviewer cannot be the same as the employee being evaluated!');
+            }
+        });
+    </script>
 </body>
 </html>

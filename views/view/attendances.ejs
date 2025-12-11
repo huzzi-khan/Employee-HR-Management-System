@@ -7,46 +7,71 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>All Attendance Records</h1>
-        
-        <div class="button-group">
-            <a href="/attendance/add" class="btn-primary">Add New Attendance</a>
-            <a href="/" class="btn-secondary">Back to Home</a>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
         </div>
-        
-        <% if (attendances.length === 0) { %>
-            <p class="no-data">No attendance records found.</p>
-        <% } else { %>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Attendance ID</th>
-                        <th>Employee</th>
-                        <th>Work Date</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% attendances.forEach(att => { %>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>All Attendance Records</h1>
+            
+            <% if (success) { %>
+                <div class="success-message"><%= success %></div>
+            <% } %>
+            
+            <% if (error) { %>
+                <div class="error-message"><%= error %></div>
+            <% } %>
+            
+            <div class="button-group">
+                <a href="/attendance/add" class="btn-primary">Add New Attendance</a>
+                <a href="/" class="btn-secondary">Back to Home</a>
+            </div>
+            
+            <% if (attendances.length === 0) { %>
+                <p class="no-data">No attendance records found.</p>
+            <% } else { %>
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <td><%= att.AttendanceID %></td>
-                            <td><%= att.EmployeeName %> (ID: <%= att.EmployeeID %>)</td>
-                            <td><%= att.WorkDate.toISOString().split('T')[0] %></td>
-                            <td><%= att.TimeIn %></td>
-                            <td><%= att.TimeOut || 'Not Checked Out' %></td>
-                            <td class="action-buttons">
-                                <a href="/attendance/<%= att.AttendanceID %>" class="btn-view">View</a>
-                                <a href="/attendance/<%= att.AttendanceID %>/edit" class="btn-edit">Edit</a>
-                                <a href="/attendance/<%= att.AttendanceID %>/delete" class="btn-delete">Delete</a>
-                            </td>
+                            <th>Attendance ID</th>
+                            <th>Employee</th>
+                            <th>Work Date</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Actions</th>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        <% } %>
-    </div>
+                    </thead>
+                    <tbody>
+                        <% attendances.forEach(att => { %>
+                            <tr>
+                                <td><%= att.AttendanceID %></td>
+                                <td><%= att.FirstName %> <%= att.LastName %> (ID: <%= att.EmployeeID %>)</td>
+                                <td><%= att.WorkDate.toISOString().split('T')[0] %></td>
+                                <td><%= att.TimeIn %></td>
+                                <td><%= att.TimeOut || 'Not Checked Out' %></td>
+                                <td class="action-buttons">
+                                    <a href="/attendance/details/<%= att.AttendanceID %>" class="btn-view">View</a>
+                                    <a href="/attendance/edit/<%= att.AttendanceID %>" class="btn-edit">Edit</a>
+                                    <a href="/attendance/delete/<%= att.AttendanceID %>" class="btn-delete">Delete</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

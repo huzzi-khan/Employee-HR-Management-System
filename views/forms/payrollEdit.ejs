@@ -7,63 +7,132 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Payroll Record</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/payroll/<%= payroll.PayrollID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="employeeID">Employee *</label>
-                <select id="employeeID" name="employeeID" required>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= payroll.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="payPeriodStartDate">Pay Period Start *</label>
-                    <input type="date" id="payPeriodStartDate" name="payPeriodStartDate" value="<%= payroll.PayPeriodStartDate.toISOString().split('T')[0] %>" required>
-                </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
                 
-                <div class="form-group">
-                    <label for="payPeriodEndDate">Pay Period End *</label>
-                    <input type="date" id="payPeriodEndDate" name="payPeriodEndDate" value="<%= payroll.PayPeriodEndDate.toISOString().split('T')[0] %>" required>
-                </div>
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/payroll/edit/<%= formData.PayrollID %>" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="payPeriodStart">Pay Period Start *</label>
+                            <input 
+                                type="date" 
+                                id="payPeriodStart" 
+                                name="payPeriodStart" 
+                                value="<%= formData.PayPeriodStartDate ? formData.PayPeriodStartDate.toISOString().split('T')[0] : '' %>" 
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="payPeriodEnd">Pay Period End *</label>
+                            <input 
+                                type="date" 
+                                id="payPeriodEnd" 
+                                name="payPeriodEnd" 
+                                value="<%= formData.PayPeriodEndDate ? formData.PayPeriodEndDate.toISOString().split('T')[0] : '' %>" 
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grossPay">Gross Pay *</label>
+                        <input 
+                            type="number" 
+                            id="grossPay" 
+                            name="grossPay" 
+                            step="0.01" 
+                            min="0" 
+                            value="<%= formData.GrossPay || '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deductions">Deductions *</label>
+                        <input 
+                            type="number" 
+                            id="deductions" 
+                            name="deductions" 
+                            step="0.01" 
+                            min="0" 
+                            value="<%= formData.Deductions || '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="netPay">Net Pay *</label>
+                        <input 
+                            type="number" 
+                            id="netPay" 
+                            name="netPay" 
+                            step="0.01" 
+                            min="0" 
+                            value="<%= formData.NetPay || '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="datePaid">Date Paid *</label>
+                        <input 
+                            type="date" 
+                            id="datePaid" 
+                            name="datePaid" 
+                            value="<%= formData.DatePaid ? formData.DatePaid.toISOString().split('T')[0] : '' %>" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Payroll Record</button>
+                        <a href="/payroll/details/<%= formData.PayrollID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/payroll/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="grossPay">Gross Pay *</label>
-                <input type="number" id="grossPay" name="grossPay" step="0.01" min="0" value="<%= payroll.GrossPay %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="deductions">Deductions *</label>
-                <input type="number" id="deductions" name="deductions" step="0.01" min="0" value="<%= payroll.Deductions %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="netPay">Net Pay *</label>
-                <input type="number" id="netPay" name="netPay" step="0.01" min="0" value="<%= payroll.NetPay %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="datePaid">Date Paid *</label>
-                <input type="date" id="datePaid" name="datePaid" value="<%= payroll.DatePaid.toISOString().split('T')[0] %>" required>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Payroll Record</button>
-                <a href="/payroll/<%= payroll.PayrollID %>" class="btn-secondary">Cancel</a>
-                <a href="/payroll" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>
