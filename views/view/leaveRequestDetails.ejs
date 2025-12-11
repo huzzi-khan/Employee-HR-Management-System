@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Details - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Leave Request Details</h1>
+        
+        <div class="details-card">
+            <div class="detail-row">
+                <span class="detail-label">Leave ID:</span>
+                <span class="detail-value"><%= leaveRequest.LeaveID %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Employee:</span>
+                <span class="detail-value"><%= leaveRequest.EmployeeName %> (ID: <%= leaveRequest.EmployeeID %>)</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Leave Type:</span>
+                <span class="detail-value"><%= leaveRequest.LeaveType %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Start Date:</span>
+                <span class="detail-value"><%= leaveRequest.StartDate.toISOString().split('T')[0] %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">End Date:</span>
+                <span class="detail-value"><%= leaveRequest.EndDate.toISOString().split('T')[0] %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Reason:</span>
+                <span class="detail-value"><%= leaveRequest.Reason %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value"><span class="status-badge status-<%= leaveRequest.Status.toLowerCase() %>"><%= leaveRequest.Status %></span></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Submitted Date:</span>
+                <span class="detail-value"><%= leaveRequest.SubmittedDate.toISOString().split('T')[0] %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Reviewed By:</span>
+                <span class="detail-value"><%= leaveRequest.ReviewerName || 'Not Reviewed Yet' %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Review Date:</span>
+                <span class="detail-value"><%= leaveRequest.ReviewDate ? leaveRequest.ReviewDate.toISOString().split('T')[0] : 'N/A' %></span>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <a href="/leave-requests/<%= leaveRequest.LeaveID %>/edit" class="btn-primary">Edit</a>
+            <a href="/leave-requests/<%= leaveRequest.LeaveID %>/delete" class="btn-delete">Delete</a>
+            <a href="/leave-requests" class="btn-secondary">Back to List</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Leave Requests - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>All Leave Requests</h1>
+        
+        <div class="button-group">
+            <a href="/forms/leave-request" class="btn-primary">Add New Leave Request</a>
+            <a href="/" class="btn-secondary">Back to Home</a>
+        </div>
+        
+        <% if (leaveRequests.length === 0) { %>
+            <p class="no-data">No leave requests found.</p>
+        <% } else { %>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Leave ID</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% leaveRequests.forEach(leave => { %>
+                        <tr>
+                            <td><%= leave.LeaveID %></td>
+                            <td><%= leave.EmployeeName %> (ID: <%= leave.EmployeeID %>)</td>
+                            <td><%= leave.LeaveType %></td>
+                            <td><%= leave.StartDate.toISOString().split('T')[0] %></td>
+                            <td><%= leave.EndDate.toISOString().split('T')[0] %></td>
+                            <td><span class="status-badge status-<%= leave.Status.toLowerCase() %>"><%= leave.Status %></span></td>
+                            <td class="action-buttons">
+                                <a href="/leave-requests/<%= leave.LeaveID %>" class="btn-view">View</a>
+                                <a href="/leave-requests/<%= leave.LeaveID %>/edit" class="btn-edit">Edit</a>
+                                <a href="/leave-requests/<%= leave.LeaveID %>/delete" class="btn-delete">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job Position - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Job Position</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form action="/job-positions/<%= jobPosition.JobID %>/edit" method="POST">
+            <div class="form-group">
+                <label for="jobTitle">Job Title *</label>
+                <input type="text" id="jobTitle" name="jobTitle" value="<%= jobPosition.JobTitle %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="jobDescription">Job Description</label>
+                <textarea id="jobDescription" name="jobDescription" rows="5"><%= jobPosition.JobDescription || '' %></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="minSalary">Minimum Salary *</label>
+                <input type="number" id="minSalary" name="minSalary" step="0.01" min="0" value="<%= jobPosition.MinSalary %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="maxSalary">Maximum Salary *</label>
+                <input type="number" id="maxSalary" name="maxSalary" step="0.01" min="0" value="<%= jobPosition.MaxSalary %>" required>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Update Job Position</button>
+                <a href="/job-positions/<%= jobPosition.JobID %>" class="btn-secondary">Cancel</a>
+                <a href="/job-positions" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

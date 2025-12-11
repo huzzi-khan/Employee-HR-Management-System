@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (success) { %>
+                    <div class="alert alert-success"><%= success %></div>
+                <% } %>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/payroll/add" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.employeeId == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="payPeriodStartDate">Pay Period Start Date *</label>
+                            <input 
+                                type="date" 
+                                id="payPeriodStartDate" 
+                                name="payPeriodStartDate" 
+                                value="<%= formData.payPeriodStartDate || '' %>"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="payPeriodEndDate">Pay Period End Date *</label>
+                            <input 
+                                type="date" 
+                                id="payPeriodEndDate" 
+                                name="payPeriodEndDate" 
+                                value="<%= formData.payPeriodEndDate || '' %>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="grossPay">Gross Pay (PKR) *</label>
+                            <input 
+                                type="number" 
+                                id="grossPay" 
+                                name="grossPay" 
+                                value="<%= formData.grossPay || '' %>"
+                                step="0.01"
+                                min="0"
+                                required
+                                placeholder="e.g., 75000.00"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="deductions">Deductions (PKR) *</label>
+                            <input 
+                                type="number" 
+                                id="deductions" 
+                                name="deductions" 
+                                value="<%= formData.deductions || '' %>"
+                                step="0.01"
+                                min="0"
+                                required
+                                placeholder="e.g., 8000.00"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p style="color: #666; font-size: 0.9rem;">
+                            <strong>Note:</strong> Net Pay will be automatically calculated as (Gross Pay - Deductions). 
+                            Date Paid will be set to today's date.
+                        </p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Payroll Record</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

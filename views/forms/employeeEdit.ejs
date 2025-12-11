@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Employee - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Employee</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form action="/employees/<%= employee.EmployeeID %>/edit" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" value="<%= employee.FirstName %>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" value="<%= employee.LastName %>" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="cnic">CNIC (Format: 12345-1234567-1) *</label>
+                <input type="text" id="cnic" name="cnic" pattern="[0-9]{5}-[0-9]{7}-[0-9]" value="<%= employee.CNIC %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth *</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" value="<%= employee.DateOfBirth.toISOString().split('T')[0] %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" value="<%= employee.Email %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number *</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" value="<%= employee.PhoneNumber %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address *</label>
+                <textarea id="address" name="address" rows="3" required><%= employee.Address %></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="joinDate">Join Date *</label>
+                <input type="date" id="joinDate" name="joinDate" value="<%= employee.JoinDate.toISOString().split('T')[0] %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="status">Status *</label>
+                <select id="status" name="status" required>
+                    <option value="Active" <%= employee.Status === 'Active' ? 'selected' : '' %>>Active</option>
+                    <option value="Inactive" <%= employee.Status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                    <option value="On Leave" <%= employee.Status === 'On Leave' ? 'selected' : '' %>>On Leave</option>
+                    <option value="Terminated" <%= employee.Status === 'Terminated' ? 'selected' : '' %>>Terminated</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="jobID">Job Position *</label>
+                <select id="jobID" name="jobID" required>
+                    <% jobPositions.forEach(job => { %>
+                        <option value="<%= job.JobID %>" <%= employee.JobID == job.JobID ? 'selected' : '' %>>
+                            <%= job.JobTitle %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="deptID">Department *</label>
+                <select id="deptID" name="deptID" required>
+                    <% departments.forEach(dept => { %>
+                        <option value="<%= dept.DeptID %>" <%= employee.DeptID == dept.DeptID ? 'selected' : '' %>>
+                            <%= dept.DeptName %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Update Employee</button>
+                <a href="/employees/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
+                <a href="/employees" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

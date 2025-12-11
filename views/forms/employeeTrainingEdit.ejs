@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Employee Training - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Employee Training Record</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form action="/employee-training/<%= employeeTraining.EmployeeID %>/<%= employeeTraining.TrainingID %>/edit" method="POST">
+            <div class="form-group">
+                <label for="employeeID">Employee *</label>
+                <select id="employeeID" name="employeeID" required disabled>
+                    <% employees.forEach(emp => { %>
+                        <option value="<%= emp.EmployeeID %>" <%= employeeTraining.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                        </option>
+                    <% }) %>
+                </select>
+                <small>Employee cannot be changed (part of primary key)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="trainingID">Training Session *</label>
+                <select id="trainingID" name="trainingID" required disabled>
+                    <% trainings.forEach(training => { %>
+                        <option value="<%= training.TrainingID %>" <%= employeeTraining.TrainingID == training.TrainingID ? 'selected' : '' %>>
+                            <%= training.SessionTitle %> (ID: <%= training.TrainingID %>)
+                        </option>
+                    <% }) %>
+                </select>
+                <small>Training Session cannot be changed (part of primary key)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="completionDate">Completion Date</label>
+                <input type="date" id="completionDate" name="completionDate" value="<%= employeeTraining.CompletionDate ? employeeTraining.CompletionDate.toISOString().split('T')[0] : '' %>">
+            </div>
+            
+            <div class="form-group">
+                <label for="grade">Grade</label>
+                <select id="grade" name="grade">
+                    <option value="">-- No Grade --</option>
+                    <option value="A+" <%= employeeTraining.Grade === 'A+' ? 'selected' : '' %>>A+</option>
+                    <option value="A" <%= employeeTraining.Grade === 'A' ? 'selected' : '' %>>A</option>
+                    <option value="B+" <%= employeeTraining.Grade === 'B+' ? 'selected' : '' %>>B+</option>
+                    <option value="B" <%= employeeTraining.Grade === 'B' ? 'selected' : '' %>>B</option>
+                    <option value="C+" <%= employeeTraining.Grade === 'C+' ? 'selected' : '' %>>C+</option>
+                    <option value="C" <%= employeeTraining.Grade === 'C' ? 'selected' : '' %>>C</option>
+                    <option value="F" <%= employeeTraining.Grade === 'F' ? 'selected' : '' %>>F</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Update Training Record</button>
+                <a href="/employee-training/<%= employeeTraining.EmployeeID %>/<%= employeeTraining.TrainingID %>" class="btn-secondary">Cancel</a>
+                <a href="/employee-training" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

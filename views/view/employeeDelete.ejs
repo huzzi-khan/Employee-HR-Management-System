@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Employee - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Delete Employee</h1>
+        
+        <div class="warning-message">
+            <strong>Warning:</strong> Are you sure you want to delete this employee? This will also delete all related records (attendance, leave requests, payroll, evaluations, training records). This action cannot be undone.
+        </div>
+        
+        <div class="details-card">
+            <div class="detail-row">
+                <span class="detail-label">Employee ID:</span>
+                <span class="detail-value"><%= employee.EmployeeID %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Name:</span>
+                <span class="detail-value"><%= employee.FirstName %> <%= employee.LastName %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value"><%= employee.Email %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Department:</span>
+                <span class="detail-value"><%= employee.DeptName %></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Job Position:</span>
+                <span class="detail-value"><%= employee.JobTitle %></span>
+            </div>
+        </div>
+        
+        <form action="/employees/<%= employee.EmployeeID %>/delete" method="POST">
+            <div class="button-group">
+                <button type="submit" class="btn-delete">Confirm Delete</button>
+                <a href="/employees/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
+                <a href="/employees" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

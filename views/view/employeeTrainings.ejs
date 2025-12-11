@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Employee Training Records - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>All Employee Training Records</h1>
+        
+        <div class="button-group">
+            <a href="/forms/employee-training" class="btn-primary">Add New Training Record</a>
+            <a href="/" class="btn-secondary">Back to Home</a>
+        </div>
+        
+        <% if (employeeTrainings.length === 0) { %>
+            <p class="no-data">No employee training records found.</p>
+        <% } else { %>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Training Session</th>
+                        <th>Completion Date</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% employeeTrainings.forEach(et => { %>
+                        <tr>
+                            <td><%= et.EmployeeName %> (ID: <%= et.EmployeeID %>)</td>
+                            <td><%= et.SessionTitle %> (ID: <%= et.TrainingID %>)</td>
+                            <td><%= et.CompletionDate ? et.CompletionDate.toISOString().split('T')[0] : 'Not Completed' %></td>
+                            <td><%= et.Grade || 'N/A' %></td>
+                            <td class="action-buttons">
+                                <a href="/employee-training/<%= et.EmployeeID %>/<%= et.TrainingID %>" class="btn-view">View</a>
+                                <a href="/employee-training/<%= et.EmployeeID %>/<%= et.TrainingID %>/edit" class="btn-edit">Edit</a>
+                                <a href="/employee-training/<%= et.EmployeeID %>/<%= et.TrainingID %>/delete" class="btn-delete">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Performance Evaluation - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Performance Evaluation</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form action="/evaluations/<%= evaluation.EvaluationID %>/edit" method="POST">
+            <div class="form-group">
+                <label for="employeeID">Employee Being Evaluated *</label>
+                <select id="employeeID" name="employeeID" required>
+                    <% employees.forEach(emp => { %>
+                        <option value="<%= emp.EmployeeID %>" <%= evaluation.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="reviewerID">Reviewer *</label>
+                <select id="reviewerID" name="reviewerID" required>
+                    <% employees.forEach(emp => { %>
+                        <option value="<%= emp.EmployeeID %>" <%= evaluation.ReviewerID == emp.EmployeeID ? 'selected' : '' %>>
+                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="evaluationDate">Evaluation Date *</label>
+                <input type="date" id="evaluationDate" name="evaluationDate" value="<%= evaluation.EvaluationDate.toISOString().split('T')[0] %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="rating">Rating (1.0 - 5.0) *</label>
+                <input type="number" id="rating" name="rating" step="0.01" min="1.0" max="5.0" value="<%= evaluation.Rating %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea id="comments" name="comments" rows="5"><%= evaluation.Comments || '' %></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Update Evaluation</button>
+                <a href="/evaluations/<%= evaluation.EvaluationID %>" class="btn-secondary">Cancel</a>
+                <a href="/evaluations" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

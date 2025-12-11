@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (success) { %>
+                    <div class="alert alert-success"><%= success %></div>
+                <% } %>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/employee/add" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                name="firstName" 
+                                value="<%= formData.firstName || '' %>"
+                                required
+                                placeholder="e.g., Ahmed"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                name="lastName" 
+                                value="<%= formData.lastName || '' %>"
+                                required
+                                placeholder="e.g., Khan"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cnic">CNIC (Format: XXXXX-XXXXXXX-X) *</label>
+                        <input 
+                            type="text" 
+                            id="cnic" 
+                            name="cnic" 
+                            value="<%= formData.cnic || '' %>"
+                            required
+                            placeholder="42101-1234567-8"
+                            pattern="\d{5}-\d{7}-\d"
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth *</label>
+                            <input 
+                                type="date" 
+                                id="dateOfBirth" 
+                                name="dateOfBirth" 
+                                value="<%= formData.dateOfBirth || '' %>"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="joinDate">Join Date *</label>
+                            <input 
+                                type="date" 
+                                id="joinDate" 
+                                name="joinDate" 
+                                value="<%= formData.joinDate || '' %>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                value="<%= formData.email || '' %>"
+                                required
+                                placeholder="ahmed.khan@company.com"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone (Format: 0XXX-XXXXXXX) *</label>
+                            <input 
+                                type="text" 
+                                id="phoneNumber" 
+                                name="phoneNumber" 
+                                value="<%= formData.phoneNumber || '' %>"
+                                required
+                                placeholder="0300-1234567"
+                                pattern="0\d{3}-\d{7}"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <textarea 
+                            id="address" 
+                            name="address" 
+                            rows="3"
+                            required
+                            placeholder="House 123, Street 45, Area, City"
+                        ><%= formData.address || '' %></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <select id="status" name="status" required>
+                                <option value="">-- Select Status --</option>
+                                <option value="Active" <%= formData.status === 'Active' ? 'selected' : '' %>>Active</option>
+                                <option value="Inactive" <%= formData.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                                <option value="On Leave" <%= formData.status === 'On Leave' ? 'selected' : '' %>>On Leave</option>
+                                <option value="Terminated" <%= formData.status === 'Terminated' ? 'selected' : '' %>>Terminated</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="jobId">Job Position *</label>
+                            <select id="jobId" name="jobId" required>
+                                <option value="">-- Select Job Position --</option>
+                                <% jobs.forEach(job => { %>
+                                    <option value="<%= job.JobID %>" 
+                                            <%= formData.jobId == job.JobID ? 'selected' : '' %>>
+                                        <%= job.JobTitle %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deptId">Department *</label>
+                            <select id="deptId" name="deptId" required>
+                                <option value="">-- Select Department --</option>
+                                <% departments.forEach(dept => { %>
+                                    <option value="<%= dept.DeptID %>" 
+                                            <%= formData.deptId == dept.DeptID ? 'selected' : '' %>>
+                                        <%= dept.DeptName %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Employee</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

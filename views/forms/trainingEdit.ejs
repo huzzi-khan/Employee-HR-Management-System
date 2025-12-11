@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Training Session - HR Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Training Session</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form action="/trainings/<%= training.TrainingID %>/edit" method="POST">
+            <div class="form-group">
+                <label for="sessionTitle">Session Title *</label>
+                <input type="text" id="sessionTitle" name="sessionTitle" value="<%= training.SessionTitle %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="5"><%= training.Description || '' %></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="instructor">Instructor *</label>
+                <input type="text" id="instructor" name="instructor" value="<%= training.Instructor %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="sessionDate">Session Date *</label>
+                <input type="date" id="sessionDate" name="sessionDate" value="<%= training.SessionDate.toISOString().split('T')[0] %>" min="2020-01-01" required>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Update Training Session</button>
+                <a href="/trainings/<%= training.TrainingID %>" class="btn-secondary">Cancel</a>
+                <a href="/trainings" class="btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

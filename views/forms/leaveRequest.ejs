@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (success) { %>
+                    <div class="alert alert-success"><%= success %></div>
+                <% } %>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/leave-request/add" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.employeeId == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leaveType">Leave Type *</label>
+                        <select id="leaveType" name="leaveType" required>
+                            <option value="">-- Select Leave Type --</option>
+                            <option value="Sick" <%= formData.leaveType === 'Sick' ? 'selected' : '' %>>Sick Leave</option>
+                            <option value="Annual" <%= formData.leaveType === 'Annual' ? 'selected' : '' %>>Annual Leave</option>
+                            <option value="Casual" <%= formData.leaveType === 'Casual' ? 'selected' : '' %>>Casual Leave</option>
+                            <option value="Unpaid" <%= formData.leaveType === 'Unpaid' ? 'selected' : '' %>>Unpaid Leave</option>
+                            <option value="Emergency" <%= formData.leaveType === 'Emergency' ? 'selected' : '' %>>Emergency Leave</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">Start Date *</label>
+                            <input 
+                                type="date" 
+                                id="startDate" 
+                                name="startDate" 
+                                value="<%= formData.startDate || '' %>"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date *</label>
+                            <input 
+                                type="date" 
+                                id="endDate" 
+                                name="endDate" 
+                                value="<%= formData.endDate || '' %>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Reason *</label>
+                        <textarea 
+                            id="reason" 
+                            name="reason" 
+                            rows="4"
+                            required
+                            placeholder="Please provide a detailed reason for your leave request..."
+                        ><%= formData.reason || '' %></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Submit Leave Request</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
+</body>
+</html>

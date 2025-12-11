@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (success) { %>
+                    <div class="alert alert-success"><%= success %></div>
+                <% } %>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/employee-training/add" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.employeeId == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trainingId">Training Session *</label>
+                        <select id="trainingId" name="trainingId" required>
+                            <option value="">-- Select Training Session --</option>
+                            <% trainings.forEach(training => { %>
+                                <option value="<%= training.TrainingID %>" 
+                                        <%= formData.trainingId == training.TrainingID ? 'selected' : '' %>>
+                                    <%= training.SessionTitle %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="completionDate">Completion Date</label>
+                        <input 
+                            type="date" 
+                            id="completionDate" 
+                            name="completionDate" 
+                            value="<%= formData.completionDate || '' %>"
+                        >
+                        <small style="color: #666; font-size: 0.85rem;">
+                            Leave blank if training is not yet completed
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade">Grade (Optional)</label>
+                        <select id="grade" name="grade">
+                            <option value="">-- Select Grade --</option>
+                            <option value="A+" <%= formData.grade === 'A+' ? 'selected' : '' %>>A+</option>
+                            <option value="A" <%= formData.grade === 'A' ? 'selected' : '' %>>A</option>
+                            <option value="B+" <%= formData.grade === 'B+' ? 'selected' : '' %>>B+</option>
+                            <option value="B" <%= formData.grade === 'B' ? 'selected' : '' %>>B</option>
+                            <option value="C+" <%= formData.grade === 'C+' ? 'selected' : '' %>>C+</option>
+                            <option value="C" <%= formData.grade === 'C' ? 'selected' : '' %>>C</option>
+                            <option value="F" <%= formData.grade === 'F' ? 'selected' : '' %>>F</option>
+                        </select>
+                        <small style="color: #666; font-size: 0.85rem;">
+                            Grade can be added after training completion
+                        </small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Enroll Employee in Training</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
+</body>
+</html>
