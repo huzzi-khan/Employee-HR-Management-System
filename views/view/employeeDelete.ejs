@@ -41,11 +41,11 @@
             </div>
         </div>
         
-        <form action="/employees/<%= employee.EmployeeID %>/delete" method="POST">
+        <form action="/employee/<%= employee.EmployeeID %>/delete" method="POST">
             <div class="button-group">
                 <button type="submit" class="btn-delete">Confirm Delete</button>
-                <a href="/employees/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
-                <a href="/employees" class="btn-secondary">Back to List</a>
+                <a href="/employee/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
+                <a href="/employee" class="btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

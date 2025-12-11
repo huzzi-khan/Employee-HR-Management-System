@@ -1,6 +1,5 @@
 // ============================================
-// Attendance Routes - Full CRUD
-// (Template provided by user - cleaned & fixed)
+// Attendance Routes - Full CRUD (FIXED)
 // ============================================
 const express = require('express');
 const router = express.Router();
@@ -39,7 +38,9 @@ router.get('/view', async (req, res) => {
 router.get('/details/:id', async (req, res) => {
     try {
         const sql = `
-            SELECT a.*, e.FirstName, e.LastName, e.CNIC
+            SELECT a.*, 
+                   CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,
+                   e.FirstName, e.LastName, e.CNIC
             FROM Attendance a
             JOIN Employee e ON a.EmployeeID = e.EmployeeID
             WHERE a.AttendanceID = ?
@@ -186,7 +187,9 @@ router.post('/edit/:id', [
 router.get('/delete/:id', async (req, res) => {
     try {
         const sql = `
-            SELECT a.*, e.FirstName, e.LastName
+            SELECT a.*, 
+                   CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,
+                   e.FirstName, e.LastName
             FROM Attendance a
             JOIN Employee e ON a.EmployeeID = e.EmployeeID
             WHERE a.AttendanceID = ?

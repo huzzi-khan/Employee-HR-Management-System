@@ -14,7 +14,7 @@
             <div class="error-message"><%= error %></div>
         <% } %>
         
-        <form action="/evaluations/<%= evaluation.EvaluationID %>/edit" method="POST">
+        <form action="/evaluation/<%= evaluation.EvaluationID %>/edit" method="POST">
             <div class="form-group">
                 <label for="employeeID">Employee Being Evaluated *</label>
                 <select id="employeeID" name="employeeID" required>
@@ -54,8 +54,8 @@
             
             <div class="button-group">
                 <button type="submit" class="btn-primary">Update Evaluation</button>
-                <a href="/evaluations/<%= evaluation.EvaluationID %>" class="btn-secondary">Cancel</a>
-                <a href="/evaluations" class="btn-secondary">Back to List</a>
+                <a href="/evaluation/<%= evaluation.EvaluationID %>" class="btn-secondary">Cancel</a>
+                <a href="/evaluation" class="btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

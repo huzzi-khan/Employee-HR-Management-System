@@ -1,5 +1,6 @@
 // ============================================
-// Employee Training Routes - Full CRUD
+// Employee Training Routes - Full CRUD (FIXED)
+// Path: routes/employeeTraining.js
 // ============================================
 const express = require('express');
 const router = express.Router();
@@ -18,11 +19,21 @@ router.get('/view', async (req, res) => {
             JOIN Training_Session t ON et.TrainingID = t.TrainingID
             ORDER BY et.CompletionDate DESC
         `;
-        const [rows] = await db.execute(sql);
-        res.render('view/employeeTrainings', { title: 'Employee Trainings', trainings: rows, success: req.query.success || null, error: req.query.error || null });
+        const [employeeTrainings] = await db.execute(sql);  // FIXED: Changed from [rows]
+        res.render('view/employeeTrainings', { 
+            title: 'Employee Trainings', 
+            employeeTrainings,  // FIXED: Changed from trainings: rows
+            success: req.query.success || null, 
+            error: req.query.error || null 
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.render('view/employeeTrainings', { title: 'Employee Trainings', trainings: [], success: null, error: 'Failed to load employee trainings' });
+        res.render('view/employeeTrainings', { 
+            title: 'Employee Trainings', 
+            employeeTrainings: [],  // FIXED
+            success: null, 
+            error: 'Failed to load employee trainings' 
+        });
     }
 });
 
@@ -31,15 +42,19 @@ router.get('/details/:empId/:trainingId', async (req, res) => {
     try {
         const { empId, trainingId } = req.params;
         const sql = `
-            SELECT et.*, CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName, t.SessionTitle
+            SELECT et.*, CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName, 
+                   t.SessionTitle, t.Instructor, t.SessionDate
             FROM Employee_Training et
             JOIN Employee e ON et.EmployeeID = e.EmployeeID
             JOIN Training_Session t ON et.TrainingID = t.TrainingID
             WHERE et.EmployeeID = ? AND et.TrainingID = ?
         `;
-        const [rows] = await db.execute(sql, [empId, trainingId]);
-        if (rows.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
-        res.render('view/employeeTrainingDetails', { title: 'Employee Training Details', record: rows[0] });
+        const [employeeTrainings] = await db.execute(sql, [empId, trainingId]);  // FIXED
+        if (employeeTrainings.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
+        res.render('view/employeeTrainingDetails', { 
+            title: 'Employee Training Details', 
+            employeeTraining: employeeTrainings[0]  // FIXED: Changed from record
+        });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/employeeTraining/view?error=Failed to load record');
@@ -51,10 +66,24 @@ router.get('/add', async (req, res) => {
     try {
         const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
         const [trainings] = await db.execute('SELECT TrainingID, SessionTitle FROM Training_Session ORDER BY SessionDate DESC');
-        res.render('forms/employeeTraining', { title: 'Add Employee Training', errors: null, success: null, formData: {}, employees, trainings });
+        res.render('forms/employeeTraining', { 
+            title: 'Add Employee Training', 
+            errors: null, 
+            success: null, 
+            formData: {}, 
+            employees, 
+            trainings 
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.render('forms/employeeTraining', { title: 'Add Employee Training', errors: [{ msg: 'Failed to load form data' }], success: null, formData: {}, employees: [], trainings: [] });
+        res.render('forms/employeeTraining', { 
+            title: 'Add Employee Training', 
+            errors: [{ msg: 'Failed to load form data' }], 
+            success: null, 
+            formData: {}, 
+            employees: [], 
+            trainings: [] 
+        });
     }
 });
 
@@ -69,7 +98,14 @@ router.post('/add', [
     const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
     const [trainings] = await db.execute('SELECT TrainingID, SessionTitle FROM Training_Session ORDER BY SessionDate DESC');
     if (!errors.isEmpty()) {
-        return res.render('forms/employeeTraining', { title: 'Add Employee Training', errors: errors.array(), success: null, formData: req.body, employees, trainings });
+        return res.render('forms/employeeTraining', { 
+            title: 'Add Employee Training', 
+            errors: errors.array(), 
+            success: null, 
+            formData: req.body, 
+            employees, 
+            trainings 
+        });
     }
     const { employeeId, trainingId, completionDate, grade } = req.body;
     try {
@@ -80,7 +116,14 @@ router.post('/add', [
         console.error('Error:', error);
         let msg = 'Failed to add record.';
         if (error.code === 'ER_DUP_ENTRY') msg = 'This employee-training record already exists.';
-        res.render('forms/employeeTraining', { title: 'Add Employee Training', errors: [{ msg }], success: null, formData: req.body, employees, trainings });
+        res.render('forms/employeeTraining', { 
+            title: 'Add Employee Training', 
+            errors: [{ msg }], 
+            success: null, 
+            formData: req.body, 
+            employees, 
+            trainings 
+        });
     }
 });
 
@@ -88,11 +131,17 @@ router.post('/add', [
 router.get('/edit/:empId/:trainingId', async (req, res) => {
     try {
         const { empId, trainingId } = req.params;
-        const [rows] = await db.execute('SELECT * FROM Employee_Training WHERE EmployeeID = ? AND TrainingID = ?', [empId, trainingId]);
-        if (rows.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
+        const [employeeTrainings] = await db.execute('SELECT * FROM Employee_Training WHERE EmployeeID = ? AND TrainingID = ?', [empId, trainingId]);  // FIXED
+        if (employeeTrainings.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
         const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
         const [trainings] = await db.execute('SELECT TrainingID, SessionTitle FROM Training_Session ORDER BY SessionDate DESC');
-        res.render('forms/employeeTrainingEdit', { title: 'Edit Employee Training', errors: null, formData: rows[0], employees, trainings });
+        res.render('forms/employeeTrainingEdit', { 
+            title: 'Edit Employee Training', 
+            errors: null, 
+            formData: employeeTrainings[0],  // FIXED
+            employees, 
+            trainings 
+        });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/employeeTraining/view?error=Failed to load record');
@@ -110,15 +159,19 @@ router.post('/edit/:empId/:trainingId', [
     const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
     const [trainings] = await db.execute('SELECT TrainingID, SessionTitle FROM Training_Session ORDER BY SessionDate DESC');
     if (!errors.isEmpty()) {
-        return res.render('forms/employeeTrainingEdit', { title: 'Edit Employee Training', errors: errors.array(), formData: { ...req.body, EmployeeID: req.params.empId, TrainingID: req.params.trainingId }, employees, trainings });
+        return res.render('forms/employeeTrainingEdit', { 
+            title: 'Edit Employee Training', 
+            errors: errors.array(), 
+            formData: { ...req.body, EmployeeID: req.params.empId, TrainingID: req.params.trainingId }, 
+            employees, 
+            trainings 
+        });
     }
     const { employeeId, trainingId, completionDate, grade } = req.body;
     try {
-        // If PK changed (employeeId or trainingId), we should handle by deleting old row and inserting new.
         const empOld = parseInt(req.params.empId, 10);
         const trOld = parseInt(req.params.trainingId, 10);
         if (empOld !== parseInt(employeeId, 10) || trOld !== parseInt(trainingId, 10)) {
-            // try insert new then delete old (to preserve PK uniqueness)
             await db.execute('INSERT INTO Employee_Training (EmployeeID, TrainingID, CompletionDate, Grade) VALUES (?, ?, ?, ?)', [employeeId, trainingId, completionDate || null, grade || null]);
             await db.execute('DELETE FROM Employee_Training WHERE EmployeeID = ? AND TrainingID = ?', [empOld, trOld]);
         } else {
@@ -127,7 +180,13 @@ router.post('/edit/:empId/:trainingId', [
         res.redirect('/employeeTraining/view?success=Record updated successfully');
     } catch (error) {
         console.error('Error:', error);
-        res.render('forms/employeeTrainingEdit', { title: 'Edit Employee Training', errors: [{ msg: 'Failed to update record' }], formData: { ...req.body, EmployeeID: req.params.empId, TrainingID: req.params.trainingId }, employees, trainings });
+        res.render('forms/employeeTrainingEdit', { 
+            title: 'Edit Employee Training', 
+            errors: [{ msg: 'Failed to update record' }], 
+            formData: { ...req.body, EmployeeID: req.params.empId, TrainingID: req.params.trainingId }, 
+            employees, 
+            trainings 
+        });
     }
 });
 
@@ -142,9 +201,12 @@ router.get('/delete/:empId/:trainingId', async (req, res) => {
             JOIN Training_Session t ON et.TrainingID = t.TrainingID
             WHERE et.EmployeeID = ? AND et.TrainingID = ?
         `;
-        const [rows] = await db.execute(sql, [empId, trainingId]);
-        if (rows.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
-        res.render('view/employeeTrainingDelete', { title: 'Delete Employee Training', record: rows[0] });
+        const [employeeTrainings] = await db.execute(sql, [empId, trainingId]);  // FIXED
+        if (employeeTrainings.length === 0) return res.redirect('/employeeTraining/view?error=Record not found');
+        res.render('view/employeeTrainingDelete', { 
+            title: 'Delete Employee Training', 
+            employeeTraining: employeeTrainings[0]  // FIXED
+        });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/employeeTraining/view?error=Failed to load record');

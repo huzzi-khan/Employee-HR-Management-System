@@ -14,7 +14,7 @@
             <div class="error-message"><%= error %></div>
         <% } %>
         
-        <form action="/employees/<%= employee.EmployeeID %>/edit" method="POST">
+        <form action="/employee/<%= employee.EmployeeID %>/edit" method="POST">
             <div class="form-row">
                 <div class="form-group">
                     <label for="firstName">First Name *</label>
@@ -91,8 +91,8 @@
             
             <div class="button-group">
                 <button type="submit" class="btn-primary">Update Employee</button>
-                <a href="/employees/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
-                <a href="/employees" class="btn-secondary">Back to List</a>
+                <a href="/employee/<%= employee.EmployeeID %>" class="btn-secondary">Cancel</a>
+                <a href="/employee" class="btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

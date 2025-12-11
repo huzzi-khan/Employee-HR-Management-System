@@ -1,5 +1,6 @@
 // ============================================
-// Leave Request Routes - Full CRUD
+// Leave Request Routes - Full CRUD (FIXED)
+// Path: routes/leaveRequest.js
 // ============================================
 const express = require('express');
 const router = express.Router();
@@ -16,10 +17,10 @@ router.get('/view', async (req, res) => {
             JOIN Employee e ON l.EmployeeID = e.EmployeeID
             ORDER BY l.SubmittedDate DESC
         `;
-        const [leaves] = await db.execute(sql);
+        const [leaveRequests] = await db.execute(sql);  // FIXED: Changed from [leaves]
         res.render('view/leaveRequests', {
             title: 'Leave Requests',
-            leaves,
+            leaveRequests,  // FIXED: Changed from leaves
             success: req.query.success || null,
             error: req.query.error || null
         });
@@ -27,7 +28,7 @@ router.get('/view', async (req, res) => {
         console.error('Error:', error);
         res.render('view/leaveRequests', {
             title: 'Leave Requests',
-            leaves: [],
+            leaveRequests: [],  // FIXED
             success: null,
             error: 'Failed to load leave requests'
         });
@@ -38,15 +39,20 @@ router.get('/view', async (req, res) => {
 router.get('/details/:id', async (req, res) => {
     try {
         const sql = `
-            SELECT l.*, CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName, r.FirstName AS ReviewerFirst, r.LastName AS ReviewerLast
+            SELECT l.*, CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName, 
+                   r.FirstName AS ReviewerFirst, r.LastName AS ReviewerLast,
+                   CONCAT(r.FirstName, ' ', r.LastName) AS ReviewerName
             FROM Leave_Request l
             JOIN Employee e ON l.EmployeeID = e.EmployeeID
             LEFT JOIN Employee r ON l.ReviewedBy = r.EmployeeID
             WHERE l.LeaveID = ?
         `;
-        const [leaves] = await db.execute(sql, [req.params.id]);
-        if (leaves.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
-        res.render('view/leaveRequestDetails', { title: 'Leave Request Details', leave: leaves[0] });
+        const [leaveRequests] = await db.execute(sql, [req.params.id]);  // FIXED
+        if (leaveRequests.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
+        res.render('view/leaveRequestDetails', { 
+            title: 'Leave Request Details', 
+            leaveRequest: leaveRequests[0]  // FIXED: Changed from leave
+        });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/leaveRequest/view?error=Failed to load leave request');
@@ -115,13 +121,13 @@ router.post('/add', [
 // UPDATE - Show Edit Form
 router.get('/edit/:id', async (req, res) => {
     try {
-        const [leaves] = await db.execute('SELECT * FROM Leave_Request WHERE LeaveID = ?', [req.params.id]);
-        if (leaves.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
+        const [leaveRequests] = await db.execute('SELECT * FROM Leave_Request WHERE LeaveID = ?', [req.params.id]);  // FIXED
+        if (leaveRequests.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
         const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
         res.render('forms/leaveRequestEdit', {
             title: 'Edit Leave Request',
             errors: null,
-            formData: leaves[0],
+            formData: leaveRequests[0],  // FIXED
             employees
         });
     } catch (error) {
@@ -176,9 +182,12 @@ router.get('/delete/:id', async (req, res) => {
             JOIN Employee e ON l.EmployeeID = e.EmployeeID
             WHERE l.LeaveID = ?
         `;
-        const [leaves] = await db.execute(sql, [req.params.id]);
-        if (leaves.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
-        res.render('view/leaveRequestDelete', { title: 'Delete Leave Request', leave: leaves[0] });
+        const [leaveRequests] = await db.execute(sql, [req.params.id]);  // FIXED
+        if (leaveRequests.length === 0) return res.redirect('/leaveRequest/view?error=Leave request not found');
+        res.render('view/leaveRequestDelete', { 
+            title: 'Delete Leave Request', 
+            leaveRequest: leaveRequests[0]  // FIXED
+        });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/leaveRequest/view?error=Failed to load leave request');

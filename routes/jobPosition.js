@@ -1,5 +1,5 @@
 // ============================================
-// Job Position Routes - Full CRUD
+// Job Position Routes - Full CRUD (FIXED)
 // ============================================
 const express = require('express');
 const router = express.Router();
@@ -10,10 +10,10 @@ const db = require('../config/db');
 router.get('/view', async (req, res) => {
     try {
         const sql = 'SELECT JobID, JobTitle, JobDescription, MinSalary, MaxSalary FROM Job_Position ORDER BY JobTitle';
-        const [jobs] = await db.execute(sql);
+        const [jobPositions] = await db.execute(sql);  // FIXED: Changed from [jobs] to [jobPositions]
         res.render('view/jobPositions', {
             title: 'Job Positions',
-            jobs,
+            jobPositions,  // FIXED: Changed from jobs to jobPositions
             success: req.query.success || null,
             error: req.query.error || null
         });
@@ -21,7 +21,7 @@ router.get('/view', async (req, res) => {
         console.error('Error:', error);
         res.render('view/jobPositions', {
             title: 'Job Positions',
-            jobs: [],
+            jobPositions: [],  // FIXED: Changed from jobs to jobPositions
             success: null,
             error: 'Failed to load job positions'
         });
@@ -32,13 +32,13 @@ router.get('/view', async (req, res) => {
 router.get('/details/:id', async (req, res) => {
     try {
         const sql = 'SELECT * FROM Job_Position WHERE JobID = ?';
-        const [jobs] = await db.execute(sql, [req.params.id]);
-        if (jobs.length === 0) {
+        const [jobPositions] = await db.execute(sql, [req.params.id]);  // FIXED: Changed from [jobs]
+        if (jobPositions.length === 0) {
             return res.redirect('/jobPosition/view?error=Job position not found');
         }
         res.render('view/jobPositionDetails', {
             title: 'Job Position Details',
-            job: jobs[0]
+            jobPosition: jobPositions[0]  // FIXED: Changed from job to jobPosition
         });
     } catch (error) {
         console.error('Error:', error);
@@ -94,12 +94,12 @@ router.post('/add', [
 // UPDATE - Show Edit Form
 router.get('/edit/:id', async (req, res) => {
     try {
-        const [jobs] = await db.execute('SELECT * FROM Job_Position WHERE JobID = ?', [req.params.id]);
-        if (jobs.length === 0) return res.redirect('/jobPosition/view?error=Job position not found');
+        const [jobPositions] = await db.execute('SELECT * FROM Job_Position WHERE JobID = ?', [req.params.id]);
+        if (jobPositions.length === 0) return res.redirect('/jobPosition/view?error=Job position not found');
         res.render('forms/jobPositionEdit', {
             title: 'Edit Job Position',
             errors: null,
-            formData: jobs[0]
+            formData: jobPositions[0]  // FIXED: Changed from jobs[0]
         });
     } catch (error) {
         console.error('Error:', error);
@@ -142,11 +142,11 @@ router.post('/edit/:id', [
 // DELETE - Confirm Delete
 router.get('/delete/:id', async (req, res) => {
     try {
-        const [jobs] = await db.execute('SELECT * FROM Job_Position WHERE JobID = ?', [req.params.id]);
-        if (jobs.length === 0) return res.redirect('/jobPosition/view?error=Job position not found');
+        const [jobPositions] = await db.execute('SELECT * FROM Job_Position WHERE JobID = ?', [req.params.id]);
+        if (jobPositions.length === 0) return res.redirect('/jobPosition/view?error=Job position not found');
         res.render('view/jobPositionDelete', {
             title: 'Delete Job Position',
-            job: jobs[0]
+            jobPosition: jobPositions[0]  // FIXED: Changed from job
         });
     } catch (error) {
         console.error('Error:', error);

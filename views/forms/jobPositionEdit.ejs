@@ -7,40 +7,97 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Job Position</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/job-positions/<%= jobPosition.JobID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="jobTitle">Job Title *</label>
-                <input type="text" id="jobTitle" name="jobTitle" value="<%= jobPosition.JobTitle %>" required>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
-            
-            <div class="form-group">
-                <label for="jobDescription">Job Description</label>
-                <textarea id="jobDescription" name="jobDescription" rows="5"><%= jobPosition.JobDescription || '' %></textarea>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/jobPosition/edit/<%= formData.JobID %>" class="form">
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title *</label>
+                        <input 
+                            type="text" 
+                            id="jobTitle" 
+                            name="jobTitle" 
+                            value="<%= formData.JobTitle || '' %>"
+                            required
+                            placeholder="e.g., Software Engineer"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jobDescription">Job Description</label>
+                        <textarea 
+                            id="jobDescription" 
+                            name="jobDescription" 
+                            rows="4"
+                            placeholder="Brief description of the role..."
+                        ><%= formData.JobDescription || '' %></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="minSalary">Minimum Salary (PKR) *</label>
+                            <input 
+                                type="number" 
+                                id="minSalary" 
+                                name="minSalary" 
+                                value="<%= formData.MinSalary || '' %>"
+                                step="0.01"
+                                min="0"
+                                required
+                                placeholder="e.g., 50000"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxSalary">Maximum Salary (PKR) *</label>
+                            <input 
+                                type="number" 
+                                id="maxSalary" 
+                                name="maxSalary" 
+                                value="<%= formData.MaxSalary || '' %>"
+                                step="0.01"
+                                min="0"
+                                required
+                                placeholder="e.g., 100000"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Job Position</button>
+                        <a href="/jobPosition/details/<%= formData.JobID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/jobPosition/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="minSalary">Minimum Salary *</label>
-                <input type="number" id="minSalary" name="minSalary" step="0.01" min="0" value="<%= jobPosition.MinSalary %>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="maxSalary">Maximum Salary *</label>
-                <input type="number" id="maxSalary" name="maxSalary" step="0.01" min="0" value="<%= jobPosition.MaxSalary %>" required>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Job Position</button>
-                <a href="/job-positions/<%= jobPosition.JobID %>" class="btn-secondary">Cancel</a>
-                <a href="/job-positions" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

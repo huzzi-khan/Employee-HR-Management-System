@@ -36,11 +36,11 @@
             </div>
         </div>
         
-        <form action="/trainings/<%= training.TrainingID %>/delete" method="POST">
+        <form action="/training/<%= training.TrainingID %>/delete" method="POST">
             <div class="button-group">
                 <button type="submit" class="btn-delete">Confirm Delete</button>
-                <a href="/trainings/<%= training.TrainingID %>" class="btn-secondary">Cancel</a>
-                <a href="/trainings" class="btn-secondary">Back to List</a>
+                <a href="/training/<%= training.TrainingID %>" class="btn-secondary">Cancel</a>
+                <a href="/training" class="btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

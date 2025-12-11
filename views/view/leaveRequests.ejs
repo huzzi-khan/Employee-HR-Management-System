@@ -7,48 +7,73 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>All Leave Requests</h1>
-        
-        <div class="button-group">
-            <a href="/forms/leave-request" class="btn-primary">Add New Leave Request</a>
-            <a href="/" class="btn-secondary">Back to Home</a>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
+            </div>
         </div>
-        
-        <% if (leaveRequests.length === 0) { %>
-            <p class="no-data">No leave requests found.</p>
-        <% } else { %>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Leave ID</th>
-                        <th>Employee</th>
-                        <th>Leave Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% leaveRequests.forEach(leave => { %>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>All Leave Requests</h1>
+            
+            <% if (success) { %>
+                <div class="success-message"><%= success %></div>
+            <% } %>
+            
+            <% if (error) { %>
+                <div class="error-message"><%= error %></div>
+            <% } %>
+            
+            <div class="button-group">
+                <a href="/leaveRequest/add" class="btn-primary">Add New Leave Request</a>
+                <a href="/" class="btn-secondary">Back to Home</a>
+            </div>
+            
+            <% if (leaveRequests.length === 0) { %>
+                <p class="no-data">No leave requests found.</p>
+            <% } else { %>
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <td><%= leave.LeaveID %></td>
-                            <td><%= leave.EmployeeName %> (ID: <%= leave.EmployeeID %>)</td>
-                            <td><%= leave.LeaveType %></td>
-                            <td><%= leave.StartDate.toISOString().split('T')[0] %></td>
-                            <td><%= leave.EndDate.toISOString().split('T')[0] %></td>
-                            <td><span class="status-badge status-<%= leave.Status.toLowerCase() %>"><%= leave.Status %></span></td>
-                            <td class="action-buttons">
-                                <a href="/leave-requests/<%= leave.LeaveID %>" class="btn-view">View</a>
-                                <a href="/leave-requests/<%= leave.LeaveID %>/edit" class="btn-edit">Edit</a>
-                                <a href="/leave-requests/<%= leave.LeaveID %>/delete" class="btn-delete">Delete</a>
-                            </td>
+                            <th>Leave ID</th>
+                            <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        <% } %>
-    </div>
+                    </thead>
+                    <tbody>
+                        <% leaveRequests.forEach(leaveRequest => { %>
+                            <tr>
+                                <td><%= leaveRequest.LeaveID %></td>
+                                <td><%= leaveRequest.EmployeeName %> (ID: <%= leaveRequest.EmployeeID %>)</td>
+                                <td><%= leaveRequest.LeaveType %></td>
+                                <td><%= leaveRequest.StartDate.toISOString().split('T')[0] %></td>
+                                <td><%= leaveRequest.EndDate.toISOString().split('T')[0] %></td>
+                                <td><span class="status-badge status-<%= leaveRequest.Status.toLowerCase() %>"><%= leaveRequest.Status %></span></td>
+                                <td class="action-buttons">
+                                    <a href="/leaveRequest/details/<%= leaveRequest.LeaveID %>" class="btn-view">View</a>
+                                    <a href="/leaveRequest/edit/<%= leaveRequest.LeaveID %>" class="btn-edit">Edit</a>
+                                    <a href="/leaveRequest/delete/<%= leaveRequest.LeaveID %>" class="btn-delete">Delete</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

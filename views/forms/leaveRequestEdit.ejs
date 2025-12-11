@@ -3,89 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Leave Request - HR Management</title>
+    <title><%= title %> - HR Management</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Leave Request</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/leave-requests/<%= leaveRequest.LeaveID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="employeeID">Employee *</label>
-                <select id="employeeID" name="employeeID" required>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= leaveRequest.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
-            
-            <div class="form-group">
-                <label for="leaveType">Leave Type *</label>
-                <select id="leaveType" name="leaveType" required>
-                    <option value="Sick" <%= leaveRequest.LeaveType === 'Sick' ? 'selected' : '' %>>Sick</option>
-                    <option value="Annual" <%= leaveRequest.LeaveType === 'Annual' ? 'selected' : '' %>>Annual</option>
-                    <option value="Casual" <%= leaveRequest.LeaveType === 'Casual' ? 'selected' : '' %>>Casual</option>
-                    <option value="Unpaid" <%= leaveRequest.LeaveType === 'Unpaid' ? 'selected' : '' %>>Unpaid</option>
-                    <option value="Emergency" <%= leaveRequest.LeaveType === 'Emergency' ? 'selected' : '' %>>Emergency</option>
-                </select>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="startDate">Start Date *</label>
-                    <input type="date" id="startDate" name="startDate" value="<%= leaveRequest.StartDate.toISOString().split('T')[0] %>" required>
-                </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
                 
-                <div class="form-group">
-                    <label for="endDate">End Date *</label>
-                    <input type="date" id="endDate" name="endDate" value="<%= leaveRequest.EndDate.toISOString().split('T')[0] %>" required>
-                </div>
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/leaveRequest/edit/<%= formData.LeaveID %>" class="form">
+                    <div class="form-group">
+                        <label for="employeeId">Employee *</label>
+                        <select id="employeeId" name="employeeId" required>
+                            <option value="">-- Select Employee --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.EmployeeID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leaveType">Leave Type *</label>
+                        <select id="leaveType" name="leaveType" required>
+                            <option value="">-- Select Leave Type --</option>
+                            <option value="Sick" <%= formData.LeaveType === 'Sick' ? 'selected' : '' %>>Sick</option>
+                            <option value="Annual" <%= formData.LeaveType === 'Annual' ? 'selected' : '' %>>Annual</option>
+                            <option value="Casual" <%= formData.LeaveType === 'Casual' ? 'selected' : '' %>>Casual</option>
+                            <option value="Unpaid" <%= formData.LeaveType === 'Unpaid' ? 'selected' : '' %>>Unpaid</option>
+                            <option value="Emergency" <%= formData.LeaveType === 'Emergency' ? 'selected' : '' %>>Emergency</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">Start Date *</label>
+                            <input type="date" id="startDate" name="startDate" 
+                                   value="<%= formData.StartDate ? formData.StartDate.toISOString().split('T')[0] : '' %>" 
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="endDate">End Date *</label>
+                            <input type="date" id="endDate" name="endDate" 
+                                   value="<%= formData.EndDate ? formData.EndDate.toISOString().split('T')[0] : '' %>" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reason">Reason *</label>
+                        <textarea id="reason" name="reason" rows="4" required><%= formData.Reason || '' %></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">Status *</label>
+                        <select id="status" name="status" required>
+                            <option value="Pending" <%= formData.Status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="Approved" <%= formData.Status === 'Approved' ? 'selected' : '' %>>Approved</option>
+                            <option value="Rejected" <%= formData.Status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reviewedBy">Reviewed By (Optional)</label>
+                        <select id="reviewedBy" name="reviewedBy">
+                            <option value="">-- Not Reviewed --</option>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.ReviewedBy == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Leave Request</button>
+                        <a href="/leaveRequest/details/<%= formData.LeaveID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/leaveRequest/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="reason">Reason *</label>
-                <textarea id="reason" name="reason" rows="4" required><%= leaveRequest.Reason %></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="status">Status *</label>
-                <select id="status" name="status" required>
-                    <option value="Pending" <%= leaveRequest.Status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                    <option value="Approved" <%= leaveRequest.Status === 'Approved' ? 'selected' : '' %>>Approved</option>
-                    <option value="Rejected" <%= leaveRequest.Status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="reviewedBy">Reviewed By</label>
-                <select id="reviewedBy" name="reviewedBy">
-                    <option value="">-- Not Reviewed --</option>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" <%= leaveRequest.ReviewedBy == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="reviewDate">Review Date</label>
-                <input type="date" id="reviewDate" name="reviewDate" value="<%= leaveRequest.ReviewDate ? leaveRequest.ReviewDate.toISOString().split('T')[0] : '' %>">
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Leave Request</button>
-                <a href="/leave-requests/<%= leaveRequest.LeaveID %>" class="btn-secondary">Cancel</a>
-                <a href="/leave-requests" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

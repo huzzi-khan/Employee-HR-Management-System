@@ -1,5 +1,5 @@
 // ============================================
-// HR Management System - Main Server File
+// HR Management System - Main Server File (FIXED)
 // Team: 23i-2000, 23i-6123, 21i-2772
 // ============================================
 
@@ -40,15 +40,16 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'HR Management System' });
 });
 
-app.use('/job-position', jobPositionRoutes);
+// FIX: Use consistent route paths that match what's used in views
+app.use('/jobPosition', jobPositionRoutes);      // Changed from /job-position
 app.use('/department', departmentRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/attendance', attendanceRoutes);
-app.use('/leave-request', leaveRequestRoutes);
+app.use('/leaveRequest', leaveRequestRoutes);   // Changed from /leave-request
 app.use('/payroll', payrollRoutes);
 app.use('/training', trainingRoutes);
 app.use('/evaluation', evaluationRoutes);
-app.use('/employee-training', employeeTrainingRoutes);
+app.use('/employeeTraining', employeeTrainingRoutes);  // Changed from /employee-training
 
 // 404 Error Handler
 app.use((req, res) => {

@@ -3,47 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Department - HR Management</title>
+    <title><%= title %> - HR Management</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Edit Department</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="error-message"><%= error %></div>
-        <% } %>
-        
-        <form action="/departments/<%= department.DeptID %>/edit" method="POST">
-            <div class="form-group">
-                <label for="deptName">Department Name *</label>
-                <input type="text" id="deptName" name="deptName" value="<%= department.DeptName %>" required>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">HR Management System</h1>
+            <div class="nav-links">
+                <a href="/">Home</a>
             </div>
-            
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" value="<%= department.Location || '' %>">
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2><%= title %></h2>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="alert alert-error">
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error.msg %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/department/edit/<%= formData.DeptID %>" class="form">
+                    <div class="form-group">
+                        <label for="deptName">Department Name *</label>
+                        <input 
+                            type="text" 
+                            id="deptName" 
+                            name="deptName" 
+                            value="<%= formData.DeptName || '' %>"
+                            required
+                            placeholder="e.g., Human Resources"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            value="<%= formData.Location || '' %>"
+                            placeholder="e.g., Building A - Floor 2"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="managerId">Manager (Optional)</label>
+                        <select id="managerId" name="managerId">
+                            <option value="">-- Select Manager --</option>
+                            <% managers.forEach(emp => { %>
+                                <option value="<%= emp.EmployeeID %>" 
+                                        <%= formData.ManagerID == emp.EmployeeID ? 'selected' : '' %>>
+                                    <%= emp.FirstName %> <%= emp.LastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Department</button>
+                        <a href="/department/details/<%= formData.DeptID %>" class="btn btn-secondary">Cancel</a>
+                        <a href="/department/view" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="managerID">Manager</label>
-                <select id="managerID" name="managerID">
-                    <option value="">-- No Manager --</option>
-                    <% employees.forEach(emp => { %>
-                        <option value="<%= emp.EmployeeID %>" 
-                            <%= department.ManagerID == emp.EmployeeID ? 'selected' : '' %>>
-                            <%= emp.FirstName %> <%= emp.LastName %> (ID: <%= emp.EmployeeID %>)
-                        </option>
-                    <% }) %>
-                </select>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary">Update Department</button>
-                <a href="/departments/<%= department.DeptID %>" class="btn-secondary">Cancel</a>
-                <a href="/departments" class="btn-secondary">Back to List</a>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 HR Management System</p>
+        </div>
+    </footer>
 </body>
 </html>

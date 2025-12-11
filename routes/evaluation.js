@@ -1,5 +1,5 @@
 // ============================================
-// Performance Evaluation Routes - Full CRUD
+// Performance Evaluation Routes - Full CRUD (FIXED)
 // ============================================
 const express = require('express');
 const router = express.Router();
@@ -18,11 +18,21 @@ router.get('/view', async (req, res) => {
             LEFT JOIN Employee r ON p.ReviewerID = r.EmployeeID
             ORDER BY p.EvaluationDate DESC
         `;
-        const [evals] = await db.execute(sql);
-        res.render('view/evaluations', { title: 'Performance Evaluations', evals, success: req.query.success || null, error: req.query.error || null });
+        const [evaluations] = await db.execute(sql);  // FIXED: Changed from [evals]
+        res.render('view/evaluations', { 
+            title: 'Performance Evaluations', 
+            evaluations,  // FIXED: Changed from evals
+            success: req.query.success || null, 
+            error: req.query.error || null 
+        });
     } catch (error) {
         console.error('Error:', error);
-        res.render('view/evaluations', { title: 'Performance Evaluations', evals: [], success: null, error: 'Failed to load evaluations' });
+        res.render('view/evaluations', { 
+            title: 'Performance Evaluations', 
+            evaluations: [],  // FIXED: Changed from evals
+            success: null, 
+            error: 'Failed to load evaluations' 
+        });
     }
 });
 
@@ -36,9 +46,9 @@ router.get('/details/:id', async (req, res) => {
             LEFT JOIN Employee r ON p.ReviewerID = r.EmployeeID
             WHERE p.EvaluationID = ?
         `;
-        const [evals] = await db.execute(sql, [req.params.id]);
-        if (evals.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
-        res.render('view/evaluationDetails', { title: 'Evaluation Details', evaluation: evals[0] });
+        const [evaluations] = await db.execute(sql, [req.params.id]);  // FIXED
+        if (evaluations.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
+        res.render('view/evaluationDetails', { title: 'Evaluation Details', evaluation: evaluations[0] });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/evaluation/view?error=Failed to load evaluation');
@@ -83,10 +93,10 @@ router.post('/add', [
 // UPDATE - Show Edit Form
 router.get('/edit/:id', async (req, res) => {
     try {
-        const [evals] = await db.execute('SELECT * FROM Performance_Evaluation WHERE EvaluationID = ?', [req.params.id]);
-        if (evals.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
+        const [evaluations] = await db.execute('SELECT * FROM Performance_Evaluation WHERE EvaluationID = ?', [req.params.id]);  // FIXED
+        if (evaluations.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
         const [employees] = await db.execute('SELECT EmployeeID, FirstName, LastName FROM Employee ORDER BY FirstName');
-        res.render('forms/evaluationEdit', { title: 'Edit Evaluation', errors: null, formData: evals[0], employees });
+        res.render('forms/evaluationEdit', { title: 'Edit Evaluation', errors: null, formData: evaluations[0], employees });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/evaluation/view?error=Failed to load evaluation');
@@ -127,9 +137,9 @@ router.get('/delete/:id', async (req, res) => {
             LEFT JOIN Employee e ON p.EmployeeID = e.EmployeeID
             WHERE p.EvaluationID = ?
         `;
-        const [evals] = await db.execute(sql, [req.params.id]);
-        if (evals.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
-        res.render('view/evaluationDelete', { title: 'Delete Evaluation', evaluation: evals[0] });
+        const [evaluations] = await db.execute(sql, [req.params.id]);  // FIXED
+        if (evaluations.length === 0) return res.redirect('/evaluation/view?error=Evaluation not found');
+        res.render('view/evaluationDelete', { title: 'Delete Evaluation', evaluation: evaluations[0] });
     } catch (error) {
         console.error('Error:', error);
         res.redirect('/evaluation/view?error=Failed to load evaluation');
